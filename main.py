@@ -63,8 +63,9 @@ async def home(request: Request):
         HTMLResponse: The index.html template with the booking form.
     """
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "success": False, "error": None}
+        request=request,
+        name="index.html",
+        context={"request": request, "success": False, "error": None}
     )
 
 
@@ -117,16 +118,18 @@ async def book(
 
         # Render the template with a success message
         return templates.TemplateResponse(
-            "index.html",
-            {"request": request, "success": True, "error": None}
+            request=request,
+            name="index.html",
+            context={"request": request, "success": True, "error": None}
         )
 
     except Exception as e:
         # If something goes wrong, show an error message
         print(f"[ERROR] Booking failed: {e}")
         return templates.TemplateResponse(
-            "index.html",
-            {
+            request=request,
+            name="index.html",
+            context={
                 "request": request,
                 "success": False,
                 "error": "Something went wrong. Please try again later."
