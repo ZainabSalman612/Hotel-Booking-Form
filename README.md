@@ -1,34 +1,36 @@
 # 🏨 Hotel Booking System
 
-A full-stack hotel booking web application built with **FastAPI**, **HTML/CSS**, and **PostgreSQL**. This project features a beautiful, responsive booking form with a modern UI and seamless database integration.
+A full-stack hotel booking web application built with **FastAPI**, **HTML/CSS**, and **PostgreSQL**. This project features a stunning glassmorphic booking form with animated backgrounds, smooth micro-interactions, and seamless database integration.
 
 ---
 
 ## ✨ Features
 
-- 🎨 **Professional Responsive UI** — Modern design with smooth animations and hover effects
+- 🎨 **Premium Glassmorphic UI** — Frosted glass card on animated gradient background
 - ⚡ **FastAPI Backend** — High-performance Python web framework
 - 🗃️ **PostgreSQL Database** — Reliable relational data storage
-- 📝 **Form Validation** — Client-side and server-side validation
-- 🎭 **Jinja2 Templates** — Dynamic HTML rendering
+- 📝 **Form Validation** — Client-side HTML5 validation + server-side handling
+- 🎭 **Jinja2 Templates** — Dynamic HTML rendering with conditional messages
 - 🌐 **Vercel Ready** — Pre-configured for cloud deployment
-- 📱 **Mobile Friendly** — Fully responsive design
+- 📱 **Mobile Friendly** — Fully responsive design (desktop → tablet → phone)
+- ♿ **Accessible** — Reduced motion support & semantic HTML
+- 🎆 **Micro-Animations** — Floating orbs, shimmer effects, hover transitions
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology       | Purpose                  |
-| ---------------- | ------------------------ |
-| **FastAPI**      | Backend web framework    |
-| **HTML/CSS**     | Frontend interface       |
-| **Jinja2**       | Template engine          |
-| **PostgreSQL**   | Database                 |
-| **psycopg2**     | PostgreSQL connector     |
-| **python-dotenv**| Environment variables    |
-| **Uvicorn**      | ASGI server              |
-| **Pydantic**     | Data validation          |
-| **Vercel**       | Cloud deployment         |
+| Technology        | Purpose                 |
+| ----------------- | ----------------------- |
+| **FastAPI**       | Backend web framework   |
+| **HTML/CSS**      | Frontend interface      |
+| **Jinja2**        | Template engine         |
+| **PostgreSQL**    | Database                |
+| **psycopg2**      | PostgreSQL connector    |
+| **python-dotenv** | Environment variables   |
+| **Uvicorn**       | ASGI server             |
+| **Pydantic**      | Data validation         |
+| **Vercel**        | Cloud deployment        |
 
 ---
 
@@ -41,7 +43,7 @@ Hotel-Booking-Form/
 ├── database.py             # Database connection & queries
 ├── models.py               # Pydantic data models
 ├── requirements.txt        # Python dependencies
-├── README.md               # Project documentation
+├── README.md               # Project documentation (this file)
 ├── .gitignore              # Git ignore rules
 ├── .env                    # Environment variables (not committed)
 ├── vercel.json             # Vercel deployment config
@@ -53,7 +55,7 @@ Hotel-Booking-Form/
 │   └── index.html          # Booking form HTML template
 │
 └── static/
-    └── style.css           # Stylesheet with modern design
+    └── style.css           # Stylesheet with premium design
 ```
 
 ---
@@ -116,7 +118,7 @@ CREATE DATABASE hotel_booking_db;
 psql -U postgres -d hotel_booking_db -f sql/create_table.sql
 ```
 
-Or open `sql/create_table.sql` in pgAdmin and execute it manually.
+Or open `sql/create_table.sql` in **pgAdmin** and execute it manually.
 
 #### Step 3: Update the `.env` file
 
@@ -196,11 +198,14 @@ vercel
 3. Navigate to **Settings** → **Environment Variables**
 4. Add the following variable:
 
-| Name           | Value                                                  |
-| -------------- | ------------------------------------------------------ |
-| `DATABASE_URL` | `postgresql://user:password@host:5432/hotel_booking_db`|
+| Name           | Value                                                   |
+| -------------- | ------------------------------------------------------- |
+| `DATABASE_URL` | `postgresql://user:password@host:5432/hotel_booking_db` |
 
-> 💡 **Tip:** Use a cloud PostgreSQL provider like [Neon](https://neon.tech), [Supabase](https://supabase.com), or [Railway](https://railway.app) for production databases.
+> 💡 **Tip:** Use a cloud PostgreSQL provider for production:
+> - [Neon](https://neon.tech) — Serverless Postgres (free tier available)
+> - [Supabase](https://supabase.com) — Open source Firebase alternative
+> - [Railway](https://railway.app) — One-click Postgres deployment
 
 ### Step 5: Deploy to Production
 
@@ -210,23 +215,23 @@ vercel --prod
 
 ---
 
+## 🔧 API Endpoints
+
+| Method | Endpoint | Description                   |
+| ------ | -------- | ----------------------------- |
+| `GET`  | `/`      | Render the hotel booking form |
+| `POST` | `/book`  | Process and store a booking   |
+| `GET`  | `/docs`  | FastAPI auto-generated docs   |
+
+---
+
 ## 📸 Screenshots
 
 > Add screenshots of your running application here.
 
-| Booking Form | Success Message |
-|---|---|
-| *(screenshot)* | *(screenshot)* |
-
----
-
-## 🔧 API Endpoints
-
-| Method | Endpoint | Description                        |
-| ------ | -------- | ---------------------------------- |
-| `GET`  | `/`      | Render the hotel booking form      |
-| `POST` | `/book`  | Process and store a booking        |
-| `GET`  | `/docs`  | FastAPI auto-generated API docs    |
+| Booking Form   | Success Message |
+| -------------- | --------------- |
+| *(screenshot)* | *(screenshot)*  |
 
 ---
 
