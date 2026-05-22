@@ -1,13 +1,18 @@
 /* =============================================================
    LUXURY HOTEL BOOKING — Premium Stylesheet
    =============================================================
+   A modern, glassmorphic booking form with animated gradient
+   background, floating orbs, micro-interactions, and a fully
+   responsive design.
+
    Color Palette:
-     Primary  — deep navy/indigo gradient (#1a1a2e → #16213e)
+     Primary  — deep navy/indigo (#1a1a2e → #16213e)
      Accent   — warm gold (#d4a574) & soft coral (#e8a87c)
-     BG       — soft warm off-white (#f5f0eb)
-     Card     — white with warm layered shadow
+     BG       — animated gradient (navy → purple → deep teal)
+     Card     — frosted glass (white + blur)
      Text     — charcoal (#2d2d2d) & medium gray (#6b7280)
      Success  — emerald green (#059669)
+     Error    — warm red (#dc2626)
    ============================================================= */
 
 /* ──────────────────────────────────────────────
@@ -22,9 +27,14 @@
     --color-accent-gold: #d4a574;
     --color-accent-coral: #e8a87c;
 
-    /* Background & surface */
-    --color-bg: #f5f0eb;
-    --color-card: #ffffff;
+    /* Background gradient stops */
+    --color-bg-1: #0f0c29;
+    --color-bg-2: #302b63;
+    --color-bg-3: #24243e;
+
+    /* Card (glassmorphism) */
+    --color-card: rgba(255, 255, 255, 0.92);
+    --color-card-border: rgba(255, 255, 255, 0.3);
 
     /* Text */
     --color-text: #2d2d2d;
@@ -37,27 +47,32 @@
 
     /* Success */
     --color-success: #059669;
-    --color-success-bg: #ecfdf5;
+    --color-success-bg: rgba(5, 150, 105, 0.08);
     --color-success-border: #059669;
+
+    /* Error */
+    --color-error: #dc2626;
+    --color-error-bg: rgba(220, 38, 38, 0.08);
+    --color-error-border: #dc2626;
 
     /* Shadows */
     --shadow-card:
-        0 4px 6px -1px rgba(0, 0, 0, 0.06),
-        0 10px 15px -3px rgba(0, 0, 0, 0.08),
-        0 20px 40px -4px rgba(26, 26, 46, 0.10);
-    --shadow-input-focus: 0 0 0 4px rgba(212, 165, 116, 0.18);
-    --shadow-btn: 0 4px 14px rgba(212, 165, 116, 0.35);
-    --shadow-btn-hover: 0 8px 24px rgba(212, 165, 116, 0.45);
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-input-focus: 0 0 0 4px rgba(212, 165, 116, 0.2);
+    --shadow-btn: 0 4px 16px rgba(212, 165, 116, 0.35);
+    --shadow-btn-hover: 0 8px 28px rgba(212, 165, 116, 0.5);
 
     /* Radii */
-    --radius-card: 16px;
-    --radius-input: 10px;
-    --radius-btn: 12px;
-    --radius-alert: 8px;
+    --radius-card: 20px;
+    --radius-input: 12px;
+    --radius-btn: 14px;
+    --radius-alert: 12px;
 
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ──────────────────────────────────────────────
@@ -79,7 +94,9 @@ html {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(145deg, var(--color-bg) 0%, #ede5dc 50%, var(--color-bg) 100%);
+    background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-2), var(--color-bg-3));
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
     color: var(--color-text);
     min-height: 100vh;
     display: flex;
@@ -87,19 +104,108 @@ body {
     justify-content: center;
     padding: 40px 20px;
     line-height: 1.6;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Smooth animated gradient background */
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* ──────────────────────────────────────────────
-   3. Container & Card
+   3. Animated Background Orbs
+   ────────────────────────────────────────────── */
+.bg-orbs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+}
+
+.orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #d4a574, transparent 70%);
+    top: -100px;
+    right: -100px;
+    animation: orbFloat1 8s ease-in-out infinite;
+}
+
+.orb-2 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #e8a87c, transparent 70%);
+    bottom: -80px;
+    left: -80px;
+    animation: orbFloat2 10s ease-in-out infinite;
+}
+
+.orb-3 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, #7c3aed, transparent 70%);
+    top: 40%;
+    left: 60%;
+    animation: orbFloat3 12s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(-40px, 30px) scale(1.1); }
+}
+
+@keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(30px, -20px) scale(1.05); }
+}
+
+@keyframes orbFloat3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(-20px, -30px) scale(0.95); }
+}
+
+/* ──────────────────────────────────────────────
+   4. Container & Card (Glassmorphism)
    ────────────────────────────────────────────── */
 .container {
     width: 100%;
     max-width: 680px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    animation: cardEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .booking-card {
     background: var(--color-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-card-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: 48px;
@@ -107,7 +213,7 @@ body {
     overflow: hidden;
 }
 
-/* Subtle decorative gradient bar at the very top of the card */
+/* Decorative gradient bar at the top of the card */
 .booking-card::before {
     content: '';
     position: absolute;
@@ -115,46 +221,58 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-coral), var(--color-accent-gold));
+    background: linear-gradient(90deg,
+        var(--color-accent-gold),
+        var(--color-accent-coral),
+        #7c3aed,
+        var(--color-accent-gold)
+    );
+    background-size: 200% 100%;
+    animation: shimmerBar 3s ease infinite;
+}
+
+@keyframes shimmerBar {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
 }
 
 /* ──────────────────────────────────────────────
-   4. Hero / Header Section
+   5. Hero / Header Section
    ────────────────────────────────────────────── */
 .header {
     text-align: center;
     margin-bottom: 36px;
 }
 
-/* Large hotel icon/emoji */
+/* Large hotel icon/emoji with float animation */
 .hotel-icon {
-    font-size: 48px;
+    font-size: 52px;
     margin-bottom: 12px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
     animation: float 3s ease-in-out infinite;
+    display: inline-block;
 }
 
-/* Gentle float animation for the icon */
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
+    50%      { transform: translateY(-8px); }
 }
 
 /* Gradient text heading */
 .heading {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 700;
     letter-spacing: -0.5px;
     background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary), #0f3460);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
-/* Decorative line under heading */
+/* Decorative divider line under heading */
 .heading-divider {
-    width: 56px;
+    width: 60px;
     height: 3px;
     margin: 0 auto 14px;
     border-radius: 3px;
@@ -170,42 +288,66 @@ body {
 }
 
 /* ──────────────────────────────────────────────
-   5. Success Alert (Jinja2 conditional block)
+   6. Alert Messages (Success & Error)
    ────────────────────────────────────────────── */
-.success-alert {
-    background: var(--color-success-bg);
-    border-left: 4px solid var(--color-success-border);
+.success-alert,
+.error-alert {
     padding: 16px 20px;
     border-radius: var(--radius-alert);
-    color: var(--color-success);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 15px;
     margin-bottom: 24px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    animation: fadeIn 0.5s ease forwards;
+    gap: 14px;
+    animation: alertSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.success-icon {
+.success-alert {
+    background: var(--color-success-bg);
+    border: 1px solid rgba(5, 150, 105, 0.2);
+    color: var(--color-success);
+}
+
+.error-alert {
+    background: var(--color-error-bg);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    color: var(--color-error);
+}
+
+/* Circular icon badges */
+.alert-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--color-success);
-    color: #fff;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     flex-shrink: 0;
+    color: #fff;
 }
 
-/* Fade-in keyframes for success message */
-@keyframes fadeIn {
+.alert-icon--success {
+    background: var(--color-success);
+}
+
+.alert-icon--error {
+    background: var(--color-error);
+}
+
+.alert-sub {
+    font-weight: 400;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+@keyframes alertSlideIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
     to {
         opacity: 1;
@@ -214,7 +356,7 @@ body {
 }
 
 /* ──────────────────────────────────────────────
-   6. Form Layout
+   7. Form Layout
    ────────────────────────────────────────────── */
 .booking-form {
     display: flex;
@@ -222,14 +364,16 @@ body {
 }
 
 /* ──────────────────────────────────────────────
-   7. Form Groups (Label + Input wrapper)
+   8. Form Groups (Label + Input wrapper)
    ────────────────────────────────────────────── */
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 .form-group label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-weight: 600;
     font-size: 14px;
     color: var(--color-label);
@@ -237,8 +381,14 @@ body {
     letter-spacing: 0.2px;
 }
 
+/* Small emoji before each label */
+.label-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
 /* ──────────────────────────────────────────────
-   8. Inputs, Select & Textarea
+   9. Inputs, Select & Textarea
    ────────────────────────────────────────────── */
 input[type="text"],
 input[type="email"],
@@ -254,11 +404,12 @@ textarea {
     font-family: 'Inter', sans-serif;
     font-size: 15px;
     color: var(--color-text);
-    background: var(--color-card);
+    background: rgba(255, 255, 255, 0.7);
     transition:
         border-color var(--transition-fast),
         box-shadow var(--transition-fast),
-        background-color var(--transition-fast);
+        background-color var(--transition-fast),
+        transform var(--transition-fast);
     outline: none;
     appearance: none;
     -webkit-appearance: none;
@@ -269,15 +420,17 @@ input:hover,
 select:hover,
 textarea:hover {
     border-color: var(--color-border-hover);
+    background: rgba(255, 255, 255, 0.85);
 }
 
-/* Focus state — gold accent glow */
+/* Focus state — gold accent glow + slight lift */
 input:focus,
 select:focus,
 textarea:focus {
     border-color: var(--color-accent-gold);
     box-shadow: var(--shadow-input-focus);
     background: #fffcf8;
+    transform: translateY(-1px);
 }
 
 /* Placeholder styling */
@@ -308,7 +461,7 @@ input[type="date"] {
 }
 
 /* ──────────────────────────────────────────────
-   9. Two-Column Grid (for paired fields)
+   10. Two-Column Grid (for paired fields)
    ────────────────────────────────────────────── */
 .form-grid {
     display: grid;
@@ -316,18 +469,17 @@ input[type="date"] {
     gap: 20px;
 }
 
-/* Remove bottom margin from children inside grid 
-   since the grid itself handles spacing */
+/* Keep bottom margin consistent inside grids */
 .form-grid .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 /* ──────────────────────────────────────────────
-   10. Submit Button
+   11. Submit Button
    ────────────────────────────────────────────── */
 .submit-btn {
     width: 100%;
-    padding: 16px;
+    padding: 16px 32px;
     background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-coral));
     color: #ffffff;
     font-family: 'Inter', sans-serif;
@@ -340,15 +492,31 @@ input[type="date"] {
     cursor: pointer;
     box-shadow: var(--shadow-btn);
     transition:
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast),
+        transform var(--transition-smooth),
+        box-shadow var(--transition-smooth),
         filter var(--transition-fast);
     position: relative;
     overflow: hidden;
     margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-/* Subtle shimmer overlay on the button */
+.btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-icon {
+    font-size: 20px;
+    transition: transform var(--transition-fast);
+    position: relative;
+    z-index: 1;
+}
+
+/* Shimmer overlay on the button */
 .submit-btn::after {
     content: '';
     position: absolute;
@@ -359,10 +527,10 @@ input[type="date"] {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.25),
         transparent
     );
-    transition: left 0.5s ease;
+    transition: left 0.6s ease;
 }
 
 .submit-btn:hover::after {
@@ -371,9 +539,13 @@ input[type="date"] {
 
 /* Hover — lift up with deeper shadow */
 .submit-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-btn-hover);
     filter: brightness(1.05);
+}
+
+.submit-btn:hover .btn-icon {
+    transform: translateX(4px);
 }
 
 /* Active / pressed — slight press-down effect */
@@ -384,7 +556,7 @@ input[type="date"] {
 }
 
 /* ──────────────────────────────────────────────
-   11. Footer
+   12. Footer
    ────────────────────────────────────────────── */
 .footer {
     text-align: center;
@@ -401,9 +573,9 @@ input[type="date"] {
 }
 
 /* ──────────────────────────────────────────────
-   12. Responsive Design (≤ 600px)
+   13. Responsive Design (≤ 640px)
    ────────────────────────────────────────────── */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
     body {
         padding: 20px 12px;
         align-items: flex-start;
@@ -411,11 +583,11 @@ input[type="date"] {
 
     .booking-card {
         padding: 28px 20px;
-        border-radius: 12px;
+        border-radius: 16px;
     }
 
     .heading {
-        font-size: 24px;
+        font-size: 26px;
     }
 
     .subheading {
@@ -423,7 +595,7 @@ input[type="date"] {
     }
 
     .hotel-icon {
-        font-size: 36px;
+        font-size: 40px;
     }
 
     /* Collapse two-column grid to single column */
@@ -434,7 +606,7 @@ input[type="date"] {
 
     .submit-btn {
         font-size: 15px;
-        padding: 14px;
+        padding: 14px 24px;
     }
 
     .form-group label {
@@ -451,10 +623,28 @@ input[type="date"] {
         padding: 12px 14px;
         font-size: 14px;
     }
+
+    /* Reduce orb sizes on mobile */
+    .orb-1 { width: 200px; height: 200px; }
+    .orb-2 { width: 150px; height: 150px; }
+    .orb-3 { width: 120px; height: 120px; }
 }
 
 /* ──────────────────────────────────────────────
-   13. Accessibility — Reduced Motion
+   14. Responsive Design (≤ 400px — small phones)
+   ────────────────────────────────────────────── */
+@media (max-width: 400px) {
+    .booking-card {
+        padding: 20px 16px;
+    }
+
+    .heading {
+        font-size: 22px;
+    }
+}
+
+/* ──────────────────────────────────────────────
+   15. Accessibility — Reduced Motion
    ────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -463,5 +653,9 @@ input[type="date"] {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+
+    body {
+        background-size: 100% 100%;
     }
 }
