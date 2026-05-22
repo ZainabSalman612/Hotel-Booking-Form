@@ -20,65 +20,95 @@
 <body>
 
     <!-- ============================================
+         Animated Background Orbs (Decorative Only)
+    ============================================= -->
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- ============================================
          Main Booking Card Container
     ============================================= -->
     <main class="container">
         <div class="booking-card">
 
+            <!-- ======== Error Message (Jinja2 Conditional) ======== -->
+            {% if error %}
+            <div class="error-alert" role="alert" id="error-message">
+                <span class="alert-icon alert-icon--error">✕</span>
+                {{ error }}
+            </div>
+            {% endif %}
+
             <!-- ======== Success Message (Jinja2 Conditional) ======== -->
             {% if success %}
-            <div class="success-alert" role="alert">
-                <span class="success-icon">✓</span>
-                Booking confirmed successfully! ✓
+            <div class="success-alert" role="alert" id="success-message">
+                <span class="alert-icon alert-icon--success">✓</span>
+                <div>
+                    <strong>Booking Confirmed!</strong><br>
+                    <span class="alert-sub">We've sent a confirmation to your email.</span>
+                </div>
             </div>
             {% endif %}
 
             <!-- ======== Hero / Header Section ======== -->
             <header class="header">
-                <div class="hotel-icon">🏨</div>
+                <div class="hotel-icon" aria-hidden="true">🏨</div>
                 <h1 class="heading">Book Your Stay</h1>
                 <div class="heading-divider"></div>
-                <p class="subheading">Experience luxury and comfort</p>
+                <p class="subheading">Experience luxury and comfort at its finest</p>
             </header>
 
             <!-- ======== Booking Form ======== -->
-            <form action="/book" method="POST" class="booking-form" novalidate>
+            <form action="/book" method="POST" class="booking-form" id="bookingForm">
 
                 <!-- Full Name -->
                 <div class="form-group">
-                    <label for="full_name">Full Name</label>
+                    <label for="full_name">
+                        <span class="label-icon">👤</span> Full Name
+                    </label>
                     <input
                         type="text"
                         id="full_name"
                         name="full_name"
                         placeholder="Enter your full name"
                         required
+                        minlength="2"
+                        maxlength="100"
                         autocomplete="name"
                     >
                 </div>
 
                 <!-- Email Address -->
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="email">
+                        <span class="label-icon">✉️</span> Email
+                    </label>
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder="Enter your email address"
                         required
+                        maxlength="100"
                         autocomplete="email"
                     >
                 </div>
 
                 <!-- Phone Number -->
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
+                    <label for="phone">
+                        <span class="label-icon">📞</span> Phone Number
+                    </label>
                     <input
                         type="tel"
                         id="phone"
                         name="phone"
                         placeholder="Enter your phone number"
                         required
+                        maxlength="20"
                         autocomplete="tel"
                     >
                 </div>
@@ -86,7 +116,9 @@
                 <!-- Check-in / Check-out Dates (Two-Column Grid) -->
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="check_in">Check-in Date</label>
+                        <label for="check_in">
+                            <span class="label-icon">📅</span> Check-in Date
+                        </label>
                         <input
                             type="date"
                             id="check_in"
@@ -95,7 +127,9 @@
                         >
                     </div>
                     <div class="form-group">
-                        <label for="check_out">Check-out Date</label>
+                        <label for="check_out">
+                            <span class="label-icon">📅</span> Check-out Date
+                        </label>
                         <input
                             type="date"
                             id="check_out"
@@ -108,24 +142,28 @@
                 <!-- Room Type / Number of Guests (Two-Column Grid) -->
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="room_type">Room Type</label>
+                        <label for="room_type">
+                            <span class="label-icon">🛏️</span> Room Type
+                        </label>
                         <select id="room_type" name="room_type" required>
                             <option value="" disabled selected>Select a room</option>
-                            <option value="Standard">Standard</option>
-                            <option value="Deluxe">Deluxe</option>
-                            <option value="Suite">Suite</option>
-                            <option value="Presidential Suite">Presidential Suite</option>
+                            <option value="Standard">🔹 Standard</option>
+                            <option value="Deluxe">🔷 Deluxe</option>
+                            <option value="Suite">💎 Suite</option>
+                            <option value="Presidential Suite">👑 Presidential Suite</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="guests">Number of Guests</label>
+                        <label for="guests">
+                            <span class="label-icon">👥</span> Number of Guests
+                        </label>
                         <input
                             type="number"
                             id="guests"
                             name="guests"
                             min="1"
                             max="10"
-                            placeholder="1"
+                            value="1"
                             required
                         >
                     </div>
@@ -133,17 +171,22 @@
 
                 <!-- Special Requests -->
                 <div class="form-group">
-                    <label for="special_requests">Special Requests</label>
+                    <label for="special_requests">
+                        <span class="label-icon">💬</span> Special Requests
+                    </label>
                     <textarea
                         id="special_requests"
                         name="special_requests"
                         rows="4"
-                        placeholder="Any special requests..."
+                        placeholder="Late check-in, extra pillows, dietary needs..."
                     ></textarea>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="submit-btn">Confirm Booking</button>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Confirm Booking</span>
+                    <span class="btn-icon">→</span>
+                </button>
 
             </form>
 
@@ -154,6 +197,38 @@
 
         </div><!-- /.booking-card -->
     </main>
+
+    <!-- ============================================
+         Inline JS: Set minimum dates & form UX
+    ============================================= -->
+    <script>
+        // Set today's date as the minimum for check-in
+        const today = new Date().toISOString().split('T')[0];
+        const checkIn = document.getElementById('check_in');
+        const checkOut = document.getElementById('check_out');
+
+        checkIn.setAttribute('min', today);
+        checkOut.setAttribute('min', today);
+
+        // When check-in date changes, update check-out minimum
+        checkIn.addEventListener('change', function () {
+            checkOut.setAttribute('min', this.value);
+            // Clear check-out if it's before the new check-in
+            if (checkOut.value && checkOut.value < this.value) {
+                checkOut.value = '';
+            }
+        });
+
+        // Auto-dismiss success/error message after 6 seconds
+        const alerts = document.querySelectorAll('.success-alert, .error-alert');
+        alerts.forEach(function (alert) {
+            setTimeout(function () {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(function () { alert.remove(); }, 400);
+            }, 6000);
+        });
+    </script>
 
 </body>
 </html>

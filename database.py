@@ -23,15 +23,21 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 def get_connection():
     """
     Establish and return a connection to the PostgreSQL database.
-    
+
     Uses the DATABASE_URL environment variable for the connection string.
-    
+    Format: postgresql://username:password@host:port/database_name
+
     Returns:
         psycopg2.connection: A PostgreSQL database connection object.
-    
+
     Raises:
-        Exception: If the connection fails.
+        Exception: If DATABASE_URL is missing or the connection fails.
     """
+    if not DATABASE_URL:
+        raise ValueError(
+            "[ERROR] DATABASE_URL is not set. "
+            "Please check your .env file."
+        )
     try:
         conn = psycopg2.connect(DATABASE_URL)
         return conn
@@ -46,20 +52,20 @@ def get_connection():
 def create_table():
     """
     Create the 'bookings' table if it doesn't already exist.
-    
+
     This function is called on application startup to ensure
     the required database schema is in place.
-    
+
     Table columns:
         - id: Auto-incrementing primary key
-        - full_name: Guest's full name
-        - email: Guest's email address
-        - phone: Guest's phone number
+        - full_name: Guest's full name (max 100 chars)
+        - email: Guest's email address (max 100 chars)
+        - phone: Guest's phone number (max 20 chars)
         - check_in: Check-in date
         - check_out: Check-out date
-        - room_type: Type of room booked
-        - guests: Number of guests
-        - special_requests: Any special requests
+        - room_type: Type of room booked (max 50 chars)
+        - guests: Number of guests (default 1)
+        - special_requests: Any special requests (unlimited text)
         - created_at: Timestamp of when the booking was created
     """
     conn = None
@@ -91,7 +97,7 @@ def create_table():
         print(f"[ERROR] Failed to create table: {e}")
 
     finally:
-        # Always close the connection
+        # Always close the connection to avoid resource leaks
         if conn:
             conn.close()
 
@@ -99,12 +105,14 @@ def create_table():
 # ============================================
 # Function: Insert a New Booking
 # ============================================
-def insert_booking(full_name, email, phone, check_in, check_out, room_type, guests, special_requests):
+def insert_booking(full_name, email, phone, check_in,
+                   check_out, room_type, guests, special_requests):
     """
     Insert a new booking record into the 'bookings' table.
-    
-    Uses parameterized queries to prevent SQL injection attacks.
-    
+
+    Uses parameterized queries (%s placeholders) to prevent
+    SQL injection attacks.
+
     Args:
         full_name (str): Guest's full name
         email (str): Guest's email address
@@ -114,7 +122,7 @@ def insert_booking(full_name, email, phone, check_in, check_out, room_type, gues
         room_type (str): Type of room (Standard, Deluxe, Suite, Presidential)
         guests (int): Number of guests
         special_requests (str): Any special requests or notes
-    
+
     Raises:
         Exception: If the insertion fails.
     """
@@ -125,9 +133,10 @@ def insert_booking(full_name, email, phone, check_in, check_out, room_type, gues
 
         # Parameterized INSERT query to prevent SQL injection
         query = """
-            INSERT INTO bookings 
-                (full_name, email, phone, check_in, check_out, room_type, guests, special_requests)
-            VALUES 
+            INSERT INTO bookings
+                (full_name, email, phone, check_in,
+                 check_out, room_type, guests, special_requests)
+            VALUES
                 (%s, %s, %s, %s, %s, %s, %s, %s);
         """
 

@@ -6,6 +6,7 @@
 # form processing, and template rendering.
 # ============================================
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -17,13 +18,30 @@ from typing import Optional
 # Load environment variables from .env file
 load_dotenv()
 
+
+# ============================================
+# Lifespan: runs on app startup / shutdown
+# ============================================
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Modern lifespan handler (replaces deprecated @app.on_event).
+    Creates the bookings table when the app starts.
+    """
+    # --- Startup ---
+    create_table()
+    yield
+    # --- Shutdown (nothing to clean up) ---
+
+
 # ============================================
 # Initialize FastAPI Application
 # ============================================
 app = FastAPI(
     title="Hotel Booking System",
     description="A full-stack hotel booking web application",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 # Mount static files directory (CSS, images, JS)
@@ -31,14 +49,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Set up Jinja2 template engine
 templates = Jinja2Templates(directory="templates")
-
-# ============================================
-# Create database table on startup
-# ============================================
-@app.on_event("startup")
-async def startup_event():
-    """Create the bookings table if it doesn't exist when the app starts."""
-    create_table()
 
 
 # ============================================
@@ -48,13 +58,13 @@ async def startup_event():
 async def home(request: Request):
     """
     Render the hotel booking form page.
-    
+
     Returns:
         HTMLResponse: The index.html template with the booking form.
     """
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "success": False}
+        {"request": request, "success": False, "error": None}
     )
 
 
@@ -75,10 +85,10 @@ async def book(
 ):
     """
     Process the hotel booking form submission.
-    
+
     Receives form data, validates it, stores it in the
     PostgreSQL database, and returns a success message.
-    
+
     Args:
         full_name: Guest's full name
         email: Guest's email address
@@ -88,27 +98,40 @@ async def book(
         room_type: Selected room type
         guests: Number of guests
         special_requests: Any special requests or notes
-    
-    Returns:
-        HTMLResponse: The index.html template with success message.
-    """
-    # Insert booking data into the database
-    insert_booking(
-        full_name=full_name,
-        email=email,
-        phone=phone,
-        check_in=check_in,
-        check_out=check_out,
-        room_type=room_type,
-        guests=guests,
-        special_requests=special_requests or ""
-    )
 
-    # Render the template with a success message
-    return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "success": True}
-    )
+    Returns:
+        HTMLResponse: The index.html template with success/error message.
+    """
+    try:
+        # Insert booking data into the database
+        insert_booking(
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            check_in=check_in,
+            check_out=check_out,
+            room_type=room_type,
+            guests=guests,
+            special_requests=special_requests or ""
+        )
+
+        # Render the template with a success message
+        return templates.TemplateResponse(
+            "index.html",
+            {"request": request, "success": True, "error": None}
+        )
+
+    except Exception as e:
+        # If something goes wrong, show an error message
+        print(f"[ERROR] Booking failed: {e}")
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "success": False,
+                "error": "Something went wrong. Please try again later."
+            }
+        )
 
 
 # ============================================
