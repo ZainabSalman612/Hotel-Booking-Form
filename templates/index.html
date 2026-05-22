@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book your luxury hotel stay with ease. Experience premium comfort and world-class hospitality.">
+
+    <!-- Page Title -->
+    <title>Luxury Hotel Booking</title>
+
+    <!-- Google Font: Inter (weights 300–700) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- ============================================
+         Main Booking Card Container
+    ============================================= -->
+    <main class="container">
+        <div class="booking-card">
+
+            <!-- ======== Success Message (Jinja2 Conditional) ======== -->
+            {% if success %}
+            <div class="success-alert" role="alert">
+                <span class="success-icon">✓</span>
+                Booking confirmed successfully! ✓
+            </div>
+            {% endif %}
+
+            <!-- ======== Hero / Header Section ======== -->
+            <header class="header">
+                <div class="hotel-icon">🏨</div>
+                <h1 class="heading">Book Your Stay</h1>
+                <div class="heading-divider"></div>
+                <p class="subheading">Experience luxury and comfort</p>
+            </header>
+
+            <!-- ======== Booking Form ======== -->
+            <form action="/book" method="POST" class="booking-form" novalidate>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+
+                <!-- Email Address -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        required
+                        autocomplete="tel"
+                    >
+                </div>
+
+                <!-- Check-in / Check-out Dates (Two-Column Grid) -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="check_in">Check-in Date</label>
+                        <input
+                            type="date"
+                            id="check_in"
+                            name="check_in"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out">Check-out Date</label>
+                        <input
+                            type="date"
+                            id="check_out"
+                            name="check_out"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Room Type / Number of Guests (Two-Column Grid) -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="room_type">Room Type</label>
+                        <select id="room_type" name="room_type" required>
+                            <option value="" disabled selected>Select a room</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Deluxe">Deluxe</option>
+                            <option value="Suite">Suite</option>
+                            <option value="Presidential Suite">Presidential Suite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Number of Guests</label>
+                        <input
+                            type="number"
+                            id="guests"
+                            name="guests"
+                            min="1"
+                            max="10"
+                            placeholder="1"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="form-group">
+                    <label for="special_requests">Special Requests</label>
+                    <textarea
+                        id="special_requests"
+                        name="special_requests"
+                        rows="4"
+                        placeholder="Any special requests..."
+                    ></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Confirm Booking</button>
+
+            </form>
+
+            <!-- ======== Footer ======== -->
+            <footer class="footer">
+                <p>&copy; 2026 Luxury Hotel. All rights reserved.</p>
+            </footer>
+
+        </div><!-- /.booking-card -->
+    </main>
+
+</body>
+</html>
