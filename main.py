@@ -14,6 +14,10 @@ from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 from database import insert_booking, create_table
 from typing import Optional
+import os
+
+# Define the absolute base directory of the project
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load environment variables from .env file
 load_dotenv()
@@ -44,11 +48,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Mount static files directory (CSS, images, JS)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files directory (CSS, images, JS) using absolute path
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
-# Set up Jinja2 template engine
-templates = Jinja2Templates(directory="templates")
+# Set up Jinja2 template engine using absolute path
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 
 # ============================================
